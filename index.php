@@ -96,7 +96,7 @@
 
                 
                 .navmenu .active {
-                    color: #4CAF50; 
+                    color: #608BC1; 
                     font-weight: bold;
                 }
                 </style>
@@ -265,7 +265,7 @@
 
     <style>
         .database-icon i {
-    color: #4CAF50; /* Adjust color as needed */
+    color: #608BC1; /* Adjust color as needed */
     margin-bottom: 8px;
     }
 
