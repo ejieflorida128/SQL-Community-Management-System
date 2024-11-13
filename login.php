@@ -37,6 +37,7 @@ session_start();
                                                 $_SESSION['id'] = $getData['id'];
                                                 $_SESSION['fullname'] = $getData['fullname'];
                                                 $_SESSION['gmail'] = $getData['gmail'];
+                                                $_SESSION['date'] = $getData['date'];
                                               
                                                 $_SESSION['password'] = $getData['password'];
                                                 $_SESSION['number'] = $getData['number'];

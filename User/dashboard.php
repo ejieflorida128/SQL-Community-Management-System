@@ -15,7 +15,7 @@
     <meta content="" name="description">
 
     
-    <link href="img/favicon.ico" rel="icon">
+   
 
   
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,9 +124,9 @@
                             <span class="d-none d-lg-inline-flex">Settings</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">My Profile</a>
-                            <a href="#" class="dropdown-item">Settings</a>
-                            <a href="#" class="dropdown-item">Log Out</a>
+                           <a href="home.php" class="dropdown-item">Home</a>
+                            <a href="profile.php" class="dropdown-item">My Profile</a>
+                            <a href="../index.php" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>
