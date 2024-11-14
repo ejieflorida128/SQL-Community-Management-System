@@ -340,26 +340,66 @@
                                                     </pre>
                                                     <p>Is this the right way to prevent SQL problems?</p>
                                                 </div>
-                                              <div class="actions">
-                                                 
-                                                    <button class="comment-button" style="background-color: #62825D; color: white;" onclick="toggleComments(<?php echo $postId; ?>)">💬 Comment</button>
-                                                    <script>
-                                                       
-                                                        function toggleComments(postId) {
-                                                           
-                                                            var commentsSection = document.getElementById('comments-' + postId);
+                                              <div class="actions" style = "display: flex; ">
+                                                 <div class="add_comments">
+                                               
+
+                                                 <button class="comment-button btn btn-primary" style="background-color: #78B3CE; color: white;" data-bs-toggle="modal" data-bs-target="#commentModal">
+                                                        Comment to this post
+                                                    </button>
+
+                                                   
+                                                    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header" style = "background-color: #78B3CE;">
+                                                                    <h5 class="modal-title" id="commentModalLabel" style = "color: white;">Notification!</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style = "color: white;"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                   
+                                                                    <h6>Text Comment</h6>
+                                                                    <textarea id="textCommentInput" class="form-control" placeholder="Enter your text comment..." style="width: 100%; height: 100px;"></textarea>
+                                                                    
+                                                                    <hr>
+
+                                                                
+                                                                    <h6>Code Comment</h6>
+                                                                    <textarea id="codeCommentInput" class="form-control" placeholder="Enter your code..." style="width: 100%; height: 150px; font-family: 'Courier New', monospace; background-color: #f4f4f4;"></textarea>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close" style = "border-radius: 20px;">Close</button>
+                                                                    <button type="button" class="btn btn-outline-success" onclick="submitComment()" style = "border-radius: 20px;">Submit</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>     
+                                                                
+
+                                                             
+                                                </div>
+                                                   <div class="comment_link" style = "margin-left: 10px;">
+                                                        
+                                                        <button class="comment-button" style="background-color: #62825D; color: white;" onclick="toggleComments(<?php echo $postId; ?>)">💬 Show comments</button>
+                                                            <script>
                                                             
-                                                          
-                                                            if (commentsSection.style.display === "none" || commentsSection.style.display === "") {
-                                                                commentsSection.style.display = "block";
-                                                            } else {
-                                                                commentsSection.style.display = "none";
-                                                            }
-                                                        }
-                                                        </script>
+                                                                function toggleComments(postId) {
+                                                                
+                                                                    var commentsSection = document.getElementById('comments-' + postId);
+                                                                    
+                                                                
+                                                                    if (commentsSection.style.display === "none" || commentsSection.style.display === "") {
+                                                                        commentsSection.style.display = "block";
+                                                                    } else {
+                                                                        commentsSection.style.display = "none";
+                                                                    }
+                                                                }
+                                                                </script>
+                                                        </div>
                                                 </div>
 
-                                                    <div class="comments" id="comments-<?php echo $postId; ?>" style = "display: none;">
+                                                <!-- comments -->
+                                                <div class="comments" id="comments-<?php echo $postId; ?>" style = "display: none;">
                                                          <ul class="timeline">
                                                             <li>
                                      
@@ -372,7 +412,7 @@
                                                                     <a href="javascript:;">&nbsp;</a>
                                                                 </div>
                                                                 
-                                                                <div class="timeline-body">
+                                                                <div class="timeline-body" style = "width: 78%;">
                                                                     <div class="timeline-header">
                                                                         <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
                                                                         <span class="username"><a href="javascript:;">Sean Ngu</a> <small></small></span>
@@ -415,6 +455,7 @@
                                                                             </form>
                                                                         </div>
                                                                     </div>
+                                                                    
                                                                 </div>
                                                         
                                                                 </li>
@@ -642,6 +683,7 @@
                                                                 </style>
                                                         </ul>
                                                     </div>
+                                                <!-- end sa comments -->
 
                                               
                                                 <style>
