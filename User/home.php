@@ -404,8 +404,8 @@
                                                             <li>
                                      
                                                                 <div class="timeline-time">
-                                                                    <span class="date">today</span>
-                                                                    <span class="time">04:20</span>
+                                                                    <span class="date" style = "color: #003C43;">today</span>
+                                                                    <span class="time" style = "color: #003C43;">04:20</span>
                                                                 </div>
                                                             
                                                                 <div class="timeline-icon">
@@ -475,7 +475,7 @@
                                                                         top: 5px;
                                                                         bottom: 5px;
                                                                         width: 5px;
-                                                                        background: #2d353c;
+                                                                        background: #78B3CE;
                                                                         left: 20%;
                                                                         margin-left: -2.5px
                                                                     }
@@ -529,7 +529,7 @@
                                                                         line-height: 10px;
                                                                         color: #fff;
                                                                         font-size: 14px;
-                                                                        border: 5px solid #2d353c;
+                                                                        border: 5px solid #78B3CE;
                                                                         transition: border-color .2s linear
                                                                     }
 
@@ -680,6 +680,8 @@
                                                                     .timeline-comment-box .user+.input {
                                                                         margin-left: 44px
                                                                     }
+
+                                                              
                                                                 </style>
                                                         </ul>
                                                     </div>
@@ -810,7 +812,7 @@
                              
 
                                 .code-block {
-                                    background-color: #f4f4f4;
+                                    background: linear-gradient(135deg, #173B45, #343131);
                                     border: 1px solid #ddd;
                                     padding: 10px;
                                     border-radius: 5px;
@@ -818,7 +820,7 @@
                                     white-space: pre; /* Preserves line breaks and spaces but prevents extra indentation */
                                     font-family: "Courier New", monospace;
                                     font-size: 14px;
-                                    color: #333;
+                                    color: white;
                                     margin: 10px 0;
                                 }
 

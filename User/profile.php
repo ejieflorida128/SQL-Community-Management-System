@@ -142,9 +142,7 @@ if (isset($_POST['EditInfo'])) {
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+               
                 <div class="navbar-nav align-items-center ms-auto">
                   
                     <div class="nav-item dropdown">
@@ -264,20 +262,20 @@ if (isset($_POST['EditInfo'])) {
                                                         const photoInput = document.getElementById('photo');
                                                         const imagePreview = document.getElementById('imagePreview');
 
-                                                        // Listen for changes on the file input
+                                                      
                                                         photoInput.addEventListener('change', (e) => {
-                                                            const file = e.target.files[0]; // Get the selected file
+                                                            const file = e.target.files[0]; 
                                                             if (file) {
-                                                                // Check if the file is an image
+                                                             
                                                                 const reader = new FileReader();
                                                                 reader.onload = function(event) {
-                                                                    // Set the src of the image to the file preview (base64 string)
+                                                                  
                                                                     imagePreview.src = event.target.result;
-                                                                    imagePreview.style.display = 'block'; // Display the image
+                                                                    imagePreview.style.display = 'block';
                                                                 };
-                                                                reader.readAsDataURL(file); // Read the file as a data URL (base64)
+                                                                reader.readAsDataURL(file); 
                                                             } else {
-                                                                // If no file is selected, keep the current image or hide the preview
+                                                             
                                                                 imagePreview.style.display = 'none';
                                                             }
                                                         });
