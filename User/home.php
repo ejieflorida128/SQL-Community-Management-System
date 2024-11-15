@@ -28,6 +28,35 @@
           
             $stmt->close();
         }
+
+
+
+
+        if(isset($_POST['commentForm'])){
+                    $post_id = $_POST['post_id'];
+                    $commenter_id = $_SESSION['id'];
+                
+                    $comment = $_POST['textCommentInput'];
+                    $code = $_POST['codeCommentInput'];
+
+                    $insertComment = "INSERT INTO sqlcommunity_interaction.comments (post_id,commenter_id,comment,code) VALUES ('$post_id','$commenter_id','$comment','$code')";
+                    mysqli_query($conn,$insertComment);
+
+
+                    
+
+        }
+
+        if(isset($_POST['reply'])){
+                $comment_id = $_POST['comment_id'];
+                $comment_by = $_SESSION['id'];
+                $reply_value = $_POST['reply_value'];
+                $post_id = $_POST['post_id'];
+
+                $insertReplies = "INSERT INTO sqlcommunity_interaction.replies (post_id,comment_id,reply_by,message) VALUES ('$post_id','$comment_id','$comment_by','$reply_value')";
+                mysqli_query($conn,$insertReplies);
+
+        }
     }
 
 
@@ -344,43 +373,85 @@
                                                  <div class="add_comments">
                                                
 
-                                                 <button class="comment-button btn btn-primary" style="background-color: #78B3CE; color: white;" data-bs-toggle="modal" data-bs-target="#commentModal">
-                                                        Comment to this post
-                                                    </button>
+                                                 <button class="comment-button btn btn-primary" style="background-color: #78B3CE; color: white;" data-bs-toggle="modal" data-bs-target="#commentModal<?php echo $postId; ?>">
+                                                    Post a Solution
+                                                </button>
 
-                                                   
-                                                    <div class="modal fade" id="commentModal" tabindex="-1" aria-labelledby="commentModalLabel" aria-hidden="true">
+                                                <form action="home.php" method = "post">
+                                                    <div class="modal fade" id="commentModal<?php echo $postId; ?>" tabindex="-1" aria-labelledby="commentModalLabel<?php echo $postId; ?>" aria-hidden="true">
                                                         <div class="modal-dialog">
                                                             <div class="modal-content">
-                                                                <div class="modal-header" style = "background-color: #78B3CE;">
-                                                                    <h5 class="modal-title" id="commentModalLabel" style = "color: white;">Notification!</h5>
-                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style = "color: white;"></button>
+                                                                <div class="modal-header" style="background-color: #78B3CE;">
+                                                                    <h5 class="modal-title" id="commentModalLabel<?php echo $postId; ?>" style="color: white;">Notification!</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: white;"></button>
                                                                 </div>
                                                                 <div class="modal-body">
-                                                                   
                                                                     <h6>Text Comment</h6>
-                                                                    <textarea id="textCommentInput" class="form-control" placeholder="Enter your text comment..." style="width: 100%; height: 100px;"></textarea>
-                                                                    
+                                                                    <textarea id="textCommentInput" name = "textCommentInput" class="form-control" placeholder="Enter your text comment..." style="width: 100%; height: 100px;"></textarea>
                                                                     <hr>
-
-                                                                
                                                                     <h6>Code Comment</h6>
-                                                                    <textarea id="codeCommentInput" class="form-control" placeholder="Enter your code..." style="width: 100%; height: 150px; font-family: 'Courier New', monospace; background-color: #f4f4f4;"></textarea>
+                                                                    <textarea id="codeCommentInput" name = "codeCommentInput" class="form-control" placeholder="Enter your code..." style="width: 100%; height: 150px; font-family: 'Courier New', monospace; background-color: #f4f4f4;"></textarea>
+                                                                    <input type="hidden" name="post_id" value="<?php echo $postId; ?>">
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close" style = "border-radius: 20px;">Close</button>
-                                                                    <button type="button" class="btn btn-outline-success" onclick="submitComment()" style = "border-radius: 20px;">Submit</button>
+                                                                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" aria-label="Close" style="border-radius: 20px;">Close</button>
+                                                                    <input type="submit" name="commentForm" value="Submit Comment" class="btn btn-outline-success" style="border-radius: 20px;">
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>     
+                                                    </div>
+                                                </form>
+
                                                                 
 
                                                              
                                                 </div>
                                                    <div class="comment_link" style = "margin-left: 10px;">
                                                         
-                                                        <button class="comment-button" style="background-color: #62825D; color: white;" onclick="toggleComments(<?php echo $postId; ?>)">💬 Show comments</button>
+                                                   <?php  
+                                                            $selectComments = "SELECT COUNT(*) AS comment_count FROM sqlcommunity_interaction.comments WHERE post_id = '$postId'";
+                                                            $queryComments = mysqli_query($conn, $selectComments);
+                                                            $resultComments = mysqli_fetch_assoc($queryComments);
+                                                            $commentCount = $resultComments['comment_count']; 
+
+                                                            $displayCount = ($commentCount > 99) ? "99+" : $commentCount;
+                                                        ?>
+
+                                                        <div style="position: relative; display: inline-block;">
+                                                            <button class="comment-button" 
+                                                                    style="background-color: #62825D; color: white;" 
+                                                                    onclick="toggleComments(<?php echo $postId; ?>)"
+                                                                    <?php echo $commentCount == 0 ? 'disabled' : ''; ?>>
+                                                                💬 Show Solutions
+                                                            </button>
+                                                            
+                                                            <!-- Comment Badge (displays 0 when no comments) -->
+                                                            <span class="comment-badge"><?php echo $displayCount; ?></span>
+                                                        </div>
+
+
+                                                        
+
+                                                    <!-- CSS for Badge -->
+                                                    <style>
+                                                       .comment-badge {
+                                                                position: absolute;
+                                                                top: -5px;
+                                                                right: -4px;
+                                                                background-color: red;
+                                                                color: white;
+                                                                padding: 2px 5px;
+                                                                border-radius: 50%;
+                                                                font-size: 0.8em;
+                                                                font-weight: bold;
+                                                                width: 20px;
+                                                                height: 20px;
+                                                                display: flex;
+                                                                align-items: center;
+                                                                justify-content: center;
+                                                            }
+                                                    </style>
+
                                                             <script>
                                                             
                                                                 function toggleComments(postId) {
@@ -395,70 +466,153 @@
                                                                     }
                                                                 }
                                                                 </script>
+
+                                                              
                                                         </div>
                                                 </div>
 
                                                 <!-- comments -->
                                                 <div class="comments" id="comments-<?php echo $postId; ?>" style = "display: none;">
                                                          <ul class="timeline">
+                                                         <?php
+                                                                $getCommentByThisPost = "SELECT * FROM sqlcommunity_interaction.comments WHERE post_id = $postId ORDER BY id ASC";
+                                                                $queryCommentByThisPost = mysqli_query($conn, $getCommentByThisPost);
+
+                                                                while ($resultCommentByThisPost = mysqli_fetch_assoc($queryCommentByThisPost)) {
+                                                                    $commentDateTime = new DateTime($resultCommentByThisPost['comment_date']); 
+                                                                    $currentDateTime = new DateTime();
+                                                                    
+                                                                  
+                                                                    $interval = $currentDateTime->diff($commentDateTime);
+
+                                                                 
+                                                                    if ($interval->days == 0) {
+                                                                      
+                                                                        $dateString = "today";
+                                                                        $timeString = $commentDateTime->format("H:i"); 
+                                                                    } else {
+                                                                       
+                                                                        $dateString = $commentDateTime->format("Y-m-d");
+                                                                        $timeString = $commentDateTime->format("H:i");
+                                                                    }
+                                                            ?>
+
                                                             <li>
-                                     
                                                                 <div class="timeline-time">
-                                                                    <span class="date" style = "color: #003C43;">today</span>
-                                                                    <span class="time" style = "color: #003C43;">04:20</span>
+                                                                    <span class="date" style="color: #003C43;"><?php echo $dateString; ?></span>
+                                                                    <span class="time" style="color: #003C43;"><?php echo $timeString; ?></span>
                                                                 </div>
+                                                            </li>
                                                             
                                                                 <div class="timeline-icon">
                                                                     <a href="javascript:;">&nbsp;</a>
                                                                 </div>
                                                                 
-                                                                <div class="timeline-body" style = "width: 78%;">
+                                                                <div class="timeline-body" style = "width: 78%;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5); border-radius: 20px;">
                                                                     <div class="timeline-header">
-                                                                        <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                                                                        <span class="username"><a href="javascript:;">Sean Ngu</a> <small></small></span>
-                                                                        <span class="pull-right text-muted">18 Views</span>
+
+                                                                            <?php
+                                                                                $commemter_id = $resultCommentByThisPost['commenter_id'];
+                                                                                    $getCommentInfo = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $commemter_id";
+                                                                                    $queryCommentInfo = mysqli_query($conn,$getCommentInfo);
+                                                                                    $resultCommentInfo = mysqli_fetch_assoc($queryCommentInfo);
+                                                                            ?>
+                                                                        <span class="userimage"><img src="<?php echo $resultCommentInfo['profile_picture']; ?>" alt=""></span>
+                                                                        <span class="username"><a href="javascript:;"><?php echo $resultCommentInfo['fullname']; ?></a> <small></small></span>
+                                                                        
                                                                     </div>
-                                                                    <div class="timeline-content">
-                                                                        <p>
-                                                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus turpis quis tincidunt luctus.
-                                                                            Nam sagittis dui in nunc consequat, in imperdiet nunc sagittis.
-                                                                        </p>
+                                                                    <div class="timeline-content" >
+                                                                            <p><?php echo $resultCommentByThisPost['comment']; ?></p>
+                                                        
+                                                                            <pre class="code-blocks"><code><?php echo $resultCommentByThisPost['code']; ?></code></pre>
+                                                                            
+                                                                            <style>
+                                                                             .code-blocks {
+                                                                                    background: linear-gradient(135deg, #173B45, #343131);
+                                                                                    color: white;
+                                                                                    white-space: pre-wrap;   
+                                                                                    word-wrap: break-word;  
+                                                                                    overflow-x: hidden;      
+                                                                                    font-family: 'Courier New', monospace; 
+                                                                                    background-color: #f4f4f4;
+                                                                                    padding: 10px;          
+                                                                                    border-radius: 5px;    
+                                                                                    text-align: left;   
+                                                                                }
+
+
+                                                                            </style>
+                                                                            
+                                                                         
+                                                                        <div class="stats-right">
+                                                                        <?php  
+                                                                        $comment_id = $resultCommentByThisPost['id'];
+                                                                                $selectComments = "SELECT COUNT(*) AS reply_count FROM sqlcommunity_interaction.replies WHERE post_id = '$postId' AND comment_id = '$comment_id'";
+                                                                                $queryComments = mysqli_query($conn, $selectComments);
+                                                                                $resultComments = mysqli_fetch_assoc($queryComments);
+                                                                                $commentCount = $resultComments['reply_count']; 
+
+                                                                                $displayCount = ($commentCount > 99) ? "99+" : $commentCount;
+                                                                            ?>
+                                                                               
+                                                                                 <script>
+                                                                                        
+                                                                                        window.onload = function() {
+                                                                                            var commentCount = document.getElementById('comment-count');  
+                                                                                            var repliesDiv = document.querySelector('.replies'); 
+                                                                                            
+                                                                                           
+                                                                                            commentCount.onclick = function() {
+                                                                                                
+                                                                                                if (repliesDiv.style.display === "none") {
+                                                                                                    repliesDiv.style.display = "block"; 
+                                                                                                } else {
+                                                                                                    repliesDiv.style.display = "none";  
+                                                                                                }
+                                                                                            };
+                                                                                        };
+                                                                                    </script>
+
+
+                                                                               <style>
+                                                                                #comment-count {
+                                                                                    cursor: pointer; 
+                                                                                }
+
+                                                                               </style>
+
+
+                                                                        </div>
+
+                                                                      
+
+                                                                        <style>
+                                                                            .stats-right {
+                                                                                        float: right;
+                                                                                        color: #78B3CE;
+                                                                                        font-weight: bolder;
+                                                                                    }
+
+                                                                        </style>
+
                                                                     </div>
                                                                     <div class="timeline-likes">
-                                                                        <div class="stats-right">
-                                                                        
-                                                                            <span class="stats-text">21 Comments</span>
-                                                                        </div>
+                                                                       
                                                                         <div class="stats">
-                                                                            <span class="fa-stack fa-fw stats-icon">
-                                                                            <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                                                                            <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
-                                                                            </span>
-                                                                            <span class="fa-stack fa-fw stats-icon">
-                                                                            <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                                                            <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                                                                            </span>
-                                                                            <span class="stats-total">4.3k</span>
+                                                                           
                                                                         </div>
                                                                     </div>
                                                                     
-                                                                    <div class="timeline-comment-box">
-                                                                        <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png"></div>
-                                                                        <div class="input">
-                                                                            <form action="">
-                                                                            <div class="input-group">
-                                                                                <input type="text" class="form-control rounded-corner" placeholder="Write a comment...">
-                                                                                <span class="input-group-btn p-l-10">
-                                                                                <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
-                                                                                </span>
-                                                                            </div>
-                                                                            </form>
-                                                                        </div>
-                                                                    </div>
+                                                                   
+
+                                                                                           
                                                                     
-                                                                </div>
+                                                                            </li>
+                                                                        </div>
                                                         
-                                                                </li>
+                                                              
+
+                                                                 <?php  } ?>
 
                                                                 <style>
                                                                     
