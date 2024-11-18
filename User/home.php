@@ -148,8 +148,12 @@
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
+                <?php
+              $searchTerm = '';
+                ?>
+                <form class="d-none d-md-flex ms-4" method="GET" action="">
+                    <input class="form-control border-0" type="search" name="search" placeholder="Search" value="<?php echo htmlspecialchars($searchTerm); ?>">
+                    <button class="btn btn-primary" type="submit" style = "margin-left: 10px;">Search</button>
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                   
@@ -309,9 +313,19 @@
 
                                         date_default_timezone_set('Asia/Manila');
 
+                                      
+                                            if (isset($_GET['search'])) {
+                                                $searchTerm = $conn->real_escape_string($_GET['search']); // Sanitize input
+                                            }
 
-                                        $sqlGetInfo = "SELECT * FROM sqlcommunity_interaction.post WHERE status = 'Approved' ORDER BY id DESC";
-                                        $queryGetInfo = mysqli_query($conn, $sqlGetInfo);
+
+                                            $sqlGetInfo = "SELECT * FROM sqlcommunity_interaction.post WHERE status = 'Approved'";
+                                            if (!empty($searchTerm)) {
+                                                $sqlGetInfo .= " AND (title LIKE '%$searchTerm%' OR description LIKE '%$searchTerm%' OR code LIKE '%$searchTerm%' OR post_date LIKE '%$searchTerm%')";
+                                            }
+                                            $sqlGetInfo .= " ORDER BY id DESC"; // Add sorting
+
+                                            $queryGetInfo = mysqli_query($conn, $sqlGetInfo);
 
                                         while($getData = mysqli_fetch_assoc($queryGetInfo)) {
                                             $postId = $getData['id'];
@@ -428,6 +442,8 @@
                                                             <!-- Comment Badge (displays 0 when no comments) -->
                                                             <span class="comment-badge"><?php echo $displayCount; ?></span>
                                                         </div>
+
+                                                        
 
 
                                                         

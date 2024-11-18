@@ -87,6 +87,7 @@ if (isset($_POST['EditInfo'])) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">  
     <link href="template/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
     <link href="template/lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />  
+    
     <link href="template/css/bootstrap.min.css" rel="stylesheet">
     <link href="template/css/style.css" rel="stylesheet">
     <link href="css/profile.css" rel="stylesheet">
@@ -312,122 +313,483 @@ if (isset($_POST['EditInfo'])) {
                                 <div class="tab-pane fade active show" id="profile-post">
                                     <!-- begin timeline -->
                                     <ul class="timeline">
-                                        <li>
-                                     
-                                        <div class="timeline-time">
-                                            <span class="date">today</span>
-                                            <span class="time">04:20</span>
-                                        </div>
-                                      
-                                        <div class="timeline-icon">
-                                            <a href="javascript:;">&nbsp;</a>
-                                        </div>
-                                       
-                                        <div class="timeline-body">
-                                            <div class="timeline-header">
-                                                <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                                                <span class="username"><a href="javascript:;">Sean Ngu</a> <small></small></span>
-                                                <span class="pull-right text-muted">18 Views</span>
-                                            </div>
-                                            <div class="timeline-content">
-                                                <p>
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus turpis quis tincidunt luctus.
-                                                    Nam sagittis dui in nunc consequat, in imperdiet nunc sagittis.
-                                                </p>
-                                            </div>
-                                            <div class="timeline-likes">
-                                                <div class="stats-right">
-                                                  
-                                                    <span class="stats-text">21 Comments</span>
-                                                </div>
-                                                <div class="stats">
-                                                    <span class="fa-stack fa-fw stats-icon">
-                                                    <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                                                    <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
-                                                    </span>
-                                                    <span class="fa-stack fa-fw stats-icon">
-                                                    <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                                    <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                                                    </span>
-                                                    <span class="stats-total">4.3k</span>
-                                                </div>
-                                            </div>
-                                           
-                                            <div class="timeline-comment-box">
-                                                <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png"></div>
-                                                <div class="input">
-                                                    <form action="">
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control rounded-corner" placeholder="Write a comment...">
-                                                        <span class="input-group-btn p-l-10">
-                                                        <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
-                                                        </span>
-                                                    </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                  
-                                        </li>
+                                    <?php
+                                            $user_id = $_SESSION['id'];
 
+                                            $sqlGetPostById = "SELECT * FROM sqlcommunity_interaction.post WHERE post_by = $user_id";
+                                            $getDataQuery = mysqli_query($conn,$sqlGetPostById);
 
-                                        <li>
+                                            while($getData = mysqli_fetch_assoc($getDataQuery)){
+                                                $post_id = $getData['id'];
+
+                                                $sqlGetUserInfo = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $user_id";
+                                                $queryGetUserInfo = mysqli_query($conn, $sqlGetUserInfo);
+                                                $resultUserInfo = mysqli_fetch_assoc($queryGetUserInfo);
+
+                                                $date_now = new DateTime(); 
+
+                                        
+                                                $date_post = new DateTime($getData['post_date']); 
+    
+                                            
+    
+                                                
+                                                $interval = $date_now->diff($date_post);
+    
+                                            
+                                                
+                                                if ($interval->y > 0) {
+                                                    $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                                                } elseif ($interval->m > 0) {
+                                                    $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                                                } elseif ($interval->d > 0) {
+                                                    $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                                                } elseif ($interval->h > 0) {
+                                                    $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                                                } elseif ($interval->i > 0) {
+                                                    $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                                                } else {
+                                                    $timeString = 'Just now';
+                                                }
+                                                
+                                            
+                                    ?>
                                      
+                                     <li>
                                      <div class="timeline-time">
-                                         <span class="date">today</span>
-                                         <span class="time">04:20</span>
+                                         <span class="date"><?php echo $resultUserInfo['fullname']; ?></span>
+                                         <span class="time"><?php echo $timeString; ?></span>
                                      </div>
                                    
                                      <div class="timeline-icon">
                                          <a href="javascript:;">&nbsp;</a>
                                      </div>
                                     
-                                     <div class="timeline-body">
+                                     <div class="timeline-body " style = " box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.3); " >
                                          <div class="timeline-header">
-                                             <span class="userimage"><img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt=""></span>
-                                             <span class="username"><a href="javascript:;">Sean Ngu</a> <small></small></span>
-                                             <span class="pull-right text-muted">18 Views</span>
+                                             <span class="userimage"><img src="<?php echo $resultUserInfo['profile_picture']; ?>" alt=""></span>
+                                             <span class="username"><a href="javascript:;"><?php echo $resultUserInfo['fullname']; ?></a> <small></small></span>
+                                            
                                          </div>
                                          <div class="timeline-content">
-                                             <p>
-                                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus turpis quis tincidunt luctus.
-                                                 Nam sagittis dui in nunc consequat, in imperdiet nunc sagittis.
-                                             </p>
-                                         </div>
-                                         <div class="timeline-likes">
-                                             <div class="stats-right">
-                                               
-                                                 <span class="stats-text">21 Comments</span>
-                                             </div>
-                                             <div class="stats">
-                                                 <span class="fa-stack fa-fw stats-icon">
-                                                 <i class="fa fa-circle fa-stack-2x text-danger"></i>
-                                                 <i class="fa fa-heart fa-stack-1x fa-inverse t-plus-1"></i>
-                                                 </span>
-                                                 <span class="fa-stack fa-fw stats-icon">
-                                                 <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                                                 <i class="fa fa-thumbs-up fa-stack-1x fa-inverse"></i>
-                                                 </span>
-                                                 <span class="stats-total">4.3k</span>
-                                             </div>
-                                         </div>
+                                                <pre class="code-blocks"><code><?php echo $getData['code']; ?></code></pre>
+                                                <style>
+                                                                             .code-blocks {
+                                                                                    background: linear-gradient(135deg, #173B45, #343131);
+                                                                                    color: white;
+                                                                                    white-space: pre-wrap;   
+                                                                                    word-wrap: break-word;  
+                                                                                    overflow-x: hidden;      
+                                                                                    font-family: 'Courier New', monospace; 
+                                                                                    background-color: #f4f4f4;
+                                                                                    padding: 10px;          
+                                                                                    border-radius: 5px;    
+                                                                                    text-align: left;   
+                                                                                }
+
+
+                                                                            </style>
+                                                </div>
+                                                <div class="timeline-likes">
+    <div class="stats-right">
+
+        <?php
+            $selectComments = "SELECT COUNT(*) AS reply_count FROM sqlcommunity_interaction.comments WHERE post_id = '$post_id'";
+            $queryComments = mysqli_query($conn, $selectComments);
+            $resultComments = mysqli_fetch_assoc($queryComments);
+            $commentCount = $resultComments['reply_count']; 
+
+            $displayCount = ($commentCount > 99) ? "99+" : $commentCount;
+        ?>
+
+        <div style="position: relative; display: inline-block; top: -15px;">
+            <button class="comment-button"
+                    style="background-color: #62825D; color: white;" 
+                    onclick="toggleComments(<?php echo $post_id; ?>)"
+                    <?php echo $commentCount == 0 ? 'disabled' : ''; ?>>
+                💬 Show Solutions
+            </button>
+
+            <!-- Comment Badge -->
+            <span class="comment-badge"><?php echo $displayCount; ?></span>
+        </div>
+
+        <style>
+            .comment-button {
+                padding: 5px;
+                border-radius: 10px;
+                border: none;
+                box-shadow: rgba(0, 0, 0, 0.5);
+            }
+
+            .comment-badge {
+                position: absolute;
+                top: -5px;
+                right: -4px;
+                background-color: red;
+                color: white;
+                padding: 2px 5px;
+                border-radius: 50%;
+                font-size: 0.8em;
+                font-weight: bold;
+                width: 20px;
+                height: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 20;
+            }
+        </style>
+
+        <script>
+            function toggleComments(post_id) {
+                const commentsSection = document.getElementById('comments-' + post_id);
+                if (commentsSection.style.display === "none" || commentsSection.style.display === "") {
+                    commentsSection.style.display = "block";
+                } else {
+                    commentsSection.style.display = "none";
+                }
+            }
+        </script>
+    </div>
+</div>
+
+<!-- Comments Section -->
+                                            <div class="comments" id="comments-<?php echo $post_id; ?>" style="display: none; margin-top: 34px; border-top: 5px solid #78B3CE;">
+                                                         <ul class="timeline">
+                                                         <?php
+                                                                $getCommentByThisPost = "SELECT * FROM sqlcommunity_interaction.comments WHERE post_id = $post_id ORDER BY id ASC";
+                                                                $queryCommentByThisPost = mysqli_query($conn, $getCommentByThisPost);
+
+                                                                while ($resultCommentByThisPost = mysqli_fetch_assoc($queryCommentByThisPost)) {
+                                                                    $commentDateTime = new DateTime($resultCommentByThisPost['comment_date']); 
+                                                                    $currentDateTime = new DateTime();
+                                                                    
+                                                                  
+                                                                    $interval = $currentDateTime->diff($commentDateTime);
+
+                                                                 
+                                                                    if ($interval->days == 0) {
+                                                                      
+                                                                        $dateString = "today";
+                                                                        $timeString = $commentDateTime->format("H:i"); 
+                                                                    } else {
+                                                                       
+                                                                        $dateString = $commentDateTime->format("Y-m-d");
+                                                                        $timeString = $commentDateTime->format("H:i");
+                                                                    }
+                                                            ?>
+
+                                                            <li>
+                                                                <div class="timeline-time">
+                                                                    <span class="date" style="color: #003C43;"><?php echo $dateString; ?></span>
+                                                                    <span class="time" style="color: #003C43;"><?php echo $timeString; ?></span>
+                                                                </div>
+                                                            </li>
+                                                            
+                                                                <div class="timeline-icon">
+                                                                    <a href="javascript:;">&nbsp;</a>
+                                                                </div>
+                                                                
+                                                                <div class="timeline-body" style = "width: 110%;box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5); border-radius: 20px;">
+                                                                    <div class="timeline-header">
+
+                                                                            <?php
+                                                                                $commemter_id = $resultCommentByThisPost['commenter_id'];
+                                                                                    $getCommentInfo = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $commemter_id";
+                                                                                    $queryCommentInfo = mysqli_query($conn,$getCommentInfo);
+                                                                                    $resultCommentInfo = mysqli_fetch_assoc($queryCommentInfo);
+                                                                            ?>
+                                                                        <span class="userimage"><img src="<?php echo $resultCommentInfo['profile_picture']; ?>" alt=""></span>
+                                                                        <span class="username"><a href="javascript:;"><?php echo $resultCommentInfo['fullname']; ?></a> <small></small></span>
+                                                                        
+                                                                    </div>
+                                                                    <div class="timeline-content" >
+                                                                            <p><?php echo $resultCommentByThisPost['comment']; ?></p>
+                                                        
+                                                                            <pre class="code-blocks"><code><?php echo $resultCommentByThisPost['code']; ?></code></pre>
+                                                                            
+                                                                            <style>
+                                                                             .code-blocks {
+                                                                                    background: linear-gradient(135deg, #173B45, #343131);
+                                                                                    color: white;
+                                                                                    white-space: pre-wrap;   
+                                                                                    word-wrap: break-word;  
+                                                                                    overflow-x: hidden;      
+                                                                                    font-family: 'Courier New', monospace; 
+                                                                                    background-color: #f4f4f4;
+                                                                                    padding: 10px;          
+                                                                                    border-radius: 5px;    
+                                                                                    text-align: left;   
+                                                                                }
+
+
+                                                                            </style>
+                                                                            
+                                                                         
+                                                                     
+
+                                                                      
+
+                                                                        <style>
+                                                                            .stats-right {
+                                                                                        float: right;
+                                                                                        color: #78B3CE;
+                                                                                        font-weight: bolder;
+                                                                                    }
+
+                                                                        </style>
+
+                                                                    </div>
+                                                                    <div class="timeline-likes">
+                                                                       
+                                                                        <div class="stats">
+                                                                           
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                   
+
+                                                                                           
+                                                                    
+                                                                            </li>
+                                                                        </div>
+                                                        
+                                                              
+
+                                                                 <?php  } ?>
+
+                                                                <style>
+                                                                    
+                                                                    .timeline {
+                                                                        list-style-type: none;
+                                                                        margin: 0;
+                                                                        padding: 0;
+                                                                        position: relative
+                                                                    }
+
+                                                                    .timeline:before {
+                                                                        content: '';
+                                                                        position: absolute;
+                                                                        top: 5px;
+                                                                        bottom: 5px;
+                                                                        width: 5px;
+                                                                        background: #78B3CE;
+                                                                        left: 20%;
+                                                                        margin-left: -2.5px
+                                                                    }
+
+                                                                    .timeline>li {
+                                                                        position: relative;
+                                                                        min-height: 50px;
+                                                                        padding: 20px 0
+                                                                    }
+
+                                                                    .timeline .timeline-time {
+                                                                        position: absolute;
+                                                                        left: 0;
+                                                                        width: 18%;
+                                                                        text-align: right;
+                                                                        top: 30px
+                                                                    }
+
+                                                                    .timeline .timeline-time .date,
+                                                                    .timeline .timeline-time .time {
+                                                                        display: block;
+                                                                        font-weight: 600
+                                                                    }
+
+                                                                    .timeline .timeline-time .date {
+                                                                        line-height: 16px;
+                                                                        font-size: 12px
+                                                                    }
+
+                                                                    .timeline .timeline-time .time {
+                                                                        line-height: 24px;
+                                                                        font-size: 20px;
+                                                                        color: #242a30
+                                                                    }
+
+                                                                    .timeline .timeline-icon {
+                                                                        left: 15%;
+                                                                        position: absolute;
+                                                                        width: 10%;
+                                                                        text-align: center;
+                                                                        top: 40px
+                                                                    }
+
+                                                                    .timeline .timeline-icon a {
+                                                                        text-decoration: none;
+                                                                        width: 20px;
+                                                                        height: 20px;
+                                                                        display: inline-block;
+                                                                        border-radius: 20px;
+                                                                        background: #d9e0e7;
+                                                                        line-height: 10px;
+                                                                        color: #fff;
+                                                                        font-size: 14px;
+                                                                        border: 5px solid #78B3CE;
+                                                                        transition: border-color .2s linear
+                                                                    }
+
+                                                                    .timeline .timeline-body {
+                                                                        margin-left: 23%;
+                                                                        margin-right: 17%;
+                                                                        background: #fff;
+                                                                        position: relative;
+                                                                        padding: 20px 25px;
+                                                                        border-radius: 6px
+                                                                    }
+
+                                                                    .timeline .timeline-body:before {
+                                                                        content: '';
+                                                                        display: block;
+                                                                        position: absolute;
+                                                                        border: 10px solid transparent;
+                                                                        border-right-color: #fff;
+                                                                        left: -20px;
+                                                                        top: 20px
+                                                                    }
+
+                                                                    .timeline .timeline-body>div+div {
+                                                                        margin-top: 15px
+                                                                    }
+
+                                                                    .timeline .timeline-body>div+div:last-child {
+                                                                        margin-bottom: -20px;
+                                                                        padding-bottom: 20px;
+                                                                        border-radius: 0 0 6px 6px
+                                                                    }
+
+                                                                    .timeline-header {
+                                                                        padding-bottom: 10px;
+                                                                        border-bottom: 1px solid #e2e7eb;
+                                                                        line-height: 30px
+                                                                    }
+
+                                                                    .timeline-header .userimage {
+                                                                        float: left;
+                                                                        width: 34px;
+                                                                        height: 34px;
+                                                                        border-radius: 40px;
+                                                                        overflow: hidden;
+                                                                        margin: -2px 10px -2px 0
+                                                                    }
+
+                                                                    .timeline-header .username {
+                                                                        font-size: 16px;
+                                                                        font-weight: 600
+                                                                    }
+
+                                                                    .timeline-header .username,
+                                                                    .timeline-header .username a {
+                                                                        color: #2d353c
+                                                                    }
+
+                                                                    .timeline img {
+                                                                        max-width: 100%;
+                                                                        display: block
+                                                                    }
+
+                                                                    .timeline-content {
+                                                                        letter-spacing: .25px;
+                                                                        line-height: 18px;
+                                                                        font-size: 13px
+                                                                    }
+
+                                                                    .timeline-content:after,
+                                                                    .timeline-content:before {
+                                                                        content: '';
+                                                                        display: table;
+                                                                        clear: both
+                                                                    }
+
+                                                                    .timeline-title {
+                                                                        margin-top: 0
+                                                                    }
+
+                                                                    .timeline-footer {
+                                                                        background: #fff;
+                                                                        border-top: 1px solid #e2e7ec;
+                                                                        padding-top: 15px
+                                                                    }
+
+                                                                    .timeline-footer a:not(.btn) {
+                                                                        color: #575d63
+                                                                    }
+
+                                                                    .timeline-footer a:not(.btn):focus,
+                                                                    .timeline-footer a:not(.btn):hover {
+                                                                        color: #2d353c
+                                                                    }
+
+                                                                    .timeline-likes {
+                                                                        color: #6d767f;
+                                                                        font-weight: 600;
+                                                                        font-size: 12px
+                                                                    }
+
+                                                                    .timeline-likes .stats-right {
+                                                                        float: right
+                                                                    }
+
+                                                                    .timeline-likes .stats-total {
+                                                                        display: inline-block;
+                                                                        line-height: 20px
+                                                                    }
+
+                                                                    .timeline-likes .stats-icon {
+                                                                        float: left;
+                                                                        margin-right: 5px;
+                                                                        font-size: 9px
+                                                                    }
+
+                                                                    .timeline-likes .stats-icon+.stats-icon {
+                                                                        margin-left: -2px
+                                                                    }
+
+                                                                    .timeline-likes .stats-text {
+                                                                        line-height: 20px
+                                                                    }
+
+                                                                    .timeline-likes .stats-text+.stats-text {
+                                                                        margin-left: 15px
+                                                                    }
+
+                                                                    .timeline-comment-box {
+                                                                        background: #f2f3f4;
+                                                                        margin-left: -25px;
+                                                                        margin-right: -25px;
+                                                                        padding: 20px 25px
+                                                                    }
+
+                                                                    .timeline-comment-box .user {
+                                                                        float: left;
+                                                                        width: 34px;
+                                                                        height: 34px;
+                                                                        overflow: hidden;
+                                                                        border-radius: 30px
+                                                                    }
+
+                                                                    .timeline-comment-box .user img {
+                                                                        max-width: 100%;
+                                                                        max-height: 100%
+                                                                    }
+
+                                                                    .timeline-comment-box .user+.input {
+                                                                        margin-left: 44px
+                                                                    }
+
+                                                              
+                                                                </style>
+                                                        </ul>
+                                                    </div>
                                         
-                                         <div class="timeline-comment-box">
-                                             <div class="user"><img src="https://bootdey.com/img/Content/avatar/avatar3.png"></div>
-                                             <div class="input">
-                                                 <form action="">
-                                                 <div class="input-group">
-                                                     <input type="text" class="form-control rounded-corner" placeholder="Write a comment...">
-                                                     <span class="input-group-btn p-l-10">
-                                                     <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
-                                                     </span>
-                                                 </div>
-                                                 </form>
-                                             </div>
-                                         </div>
+                                      
                                      </div>
                                
                                      </li>
+                                     <?php  } ?>
                                        
                                  
                                        

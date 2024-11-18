@@ -1,8 +1,48 @@
+
 <?php
-    session_start();
-    include("../connection/conn.php");
+session_start();
+include("../connection/conn.php");
+
+$adminAges = [];
+$result = $conn->query("SELECT age, COUNT(*) as count FROM sqlcommunity_main.admin_account GROUP BY age");
+while ($row = $result->fetch_assoc()) {
+    $adminAges[$row['age']] = $row['count'];
+}
 
 
+$userAges = [];
+$result = $conn->query("SELECT age, COUNT(*) as count FROM sqlcommunity_main.user_account GROUP BY age");
+while ($row = $result->fetch_assoc()) {
+    $userAges[$row['age']] = $row['count'];
+}
+
+
+$commentsPerPost = [];
+$result = $conn->query("SELECT post_id, COUNT(*) as count FROM sqlcommunity_interaction.comments GROUP BY post_id");
+while ($row = $result->fetch_assoc()) {
+    $commentsPerPost[$row['post_id']] = $row['count'];
+}
+
+
+$postStatus = [];
+$result = $conn->query("SELECT status, COUNT(*) as count FROM sqlcommunity_interaction.post GROUP BY status");
+while ($row = $result->fetch_assoc()) {
+    $postStatus[$row['status']] = $row['count'];
+}
+
+
+$adminLocations = [];
+$result = $conn->query("SELECT location, COUNT(*) as count FROM sqlcommunity_main.admin_account GROUP BY location");
+while ($row = $result->fetch_assoc()) {
+    $adminLocations[$row['location']] = $row['count'];
+}
+
+
+$userLocations = [];
+$result = $conn->query("SELECT location, COUNT(*) as count FROM sqlcommunity_main.user_account GROUP BY location");
+while ($row = $result->fetch_assoc()) {
+    $userLocations[$row['location']] = $row['count'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +56,8 @@
 
     
    
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -133,11 +174,130 @@
             </nav>
          
             <div class="container-fluid pt-4 px-4">
-                <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
-                    <div class="col-md-6 text-center">
-                        <h3>This is blank page</h3>
-                    </div>
+                <div class="row vh-100 bg-light rounded mx-0">
+              
+                        <!-- First Row -->
+                        <div class="col-md-4">
+                            <canvas id="chart1"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="chart2"></canvas>
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="chart3"></canvas>
+                        </div>
+                        <!-- Second Row -->
+                        <div class="col-md-4">
+                            <canvas id="chart4"></canvas> <!-- Updated to Bar Chart for Posts Per Status -->
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="chart5"></canvas> <!-- Updated to Bar Chart for Admin Location Distribution -->
+                        </div>
+                        <div class="col-md-4">
+                            <canvas id="chart6"></canvas> <!-- Updated to Bar Chart for User Location Distribution -->
+                        </div>
+     
                 </div>
+
+                     <script>
+                            // Data for charts
+                            const adminAges = <?php echo json_encode($adminAges); ?>;
+                            const userAges = <?php echo json_encode($userAges); ?>;
+                            const commentsPerPost = <?php echo json_encode($commentsPerPost); ?>;
+                            const postStatus = <?php echo json_encode($postStatus); ?>;
+                            const adminLocations = <?php echo json_encode($adminLocations); ?>;
+                            const userLocations = <?php echo json_encode($userLocations); ?>;
+
+                            // Chart 1: Admin Age Distribution
+                            new Chart(document.getElementById('chart1'), {
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(adminAges),
+                                    datasets: [{
+                                        label: 'Admin Age Distribution',
+                                        data: Object.values(adminAges),
+                                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+
+                            // Chart 2: User Age Distribution
+                            new Chart(document.getElementById('chart2'), {
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(userAges),
+                                    datasets: [{
+                                        label: 'User Age Distribution',
+                                        data: Object.values(userAges),
+                                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+
+                            // Chart 3: Comments Per Post
+                            new Chart(document.getElementById('chart3'), {
+                                type: 'line',
+                                data: {
+                                    labels: Object.keys(commentsPerPost),
+                                    datasets: [{
+                                        label: 'Comments Per Post',
+                                        data: Object.values(commentsPerPost),
+                                        backgroundColor: 'rgba(255, 206, 86, 0.6)',
+                                        borderColor: 'rgba(255, 206, 86, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+
+                            // Chart 4: Posts Per Status (Bar chart)
+                            new Chart(document.getElementById('chart4'), {
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(postStatus),
+                                    datasets: [{
+                                        label: 'Posts Per Status',
+                                        data: Object.values(postStatus),
+                                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                        borderColor: 'rgba(255, 99, 132, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+
+                            // Chart 5: Admin Location Distribution (Bar chart)
+                            new Chart(document.getElementById('chart5'), {
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(adminLocations),
+                                    datasets: [{
+                                        label: 'Admin Location Distribution',
+                                        data: Object.values(adminLocations),
+                                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+
+                            // Chart 6: User Location Distribution (Bar chart)
+                            new Chart(document.getElementById('chart6'), {
+                                type: 'bar',
+                                data: {
+                                    labels: Object.keys(userLocations),
+                                    datasets: [{
+                                        label: 'User Location Distribution',
+                                        data: Object.values(userLocations),
+                                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                                        borderColor: 'rgba(75, 192, 192, 1)',
+                                        borderWidth: 1
+                                    }]
+                                }
+                            });
+                        </script>
             </div>
           
             <div class="container-fluid pt-4 px-4">
