@@ -130,9 +130,9 @@ while ($row = $result->fetch_assoc()) {
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <form class="d-none d-md-flex ms-4">
+                <!-- <form class="d-none d-md-flex ms-4">
                     <input class="form-control border-0" type="search" placeholder="Search">
-                </form>
+                </form> -->
                 <div class="navbar-nav align-items-center ms-auto">
                   
                     <div class="nav-item dropdown">
@@ -178,10 +178,10 @@ while ($row = $result->fetch_assoc()) {
               
                         <!-- First Row -->
                         <div class="col-md-4">
-                            <canvas id="chart1"></canvas>
+                            <canvas id="chart1"></canvas> <!-- Admin Status Distribution -->
                         </div>
                         <div class="col-md-4">
-                            <canvas id="chart2"></canvas>
+                            <canvas id="chart2"></canvas> <!-- User Status Distribution -->
                         </div>
                         <div class="col-md-4">
                             <canvas id="chart3"></canvas>
