@@ -109,7 +109,7 @@ session_start();
                       if($gmail == "ejieflorida128@gmail.com" && $password == "admin"){
                           header("Location: SuperAdmin/approve_admin.php");
                       }else{
-                          $checkIfExist = "SELECT * FROM sqlcommunity_main.admin_account WHERE status = 'Confirmed'";
+                          $checkIfExist = "SELECT * FROM sqlcommunity_main.admin_account WHERE status = 'Approve'";
                           $queryIfExist = mysqli_query($conn,$checkIfExist);
 
                           $accoutCheck = 0;
@@ -117,15 +117,17 @@ session_start();
                           while($getData = mysqli_fetch_assoc($queryIfExist)){
                                   if($gmail == $getData['gmail']){
                                           if($password == $getData['password']){
-                                                  $_SESSION['id'] = $getData['id'];
-                                                  $_SESSION['fullname'] = $getData['fullname'];
-                                                  $_SESSION['gmail'] = $getData['gmail'];
-                                              
-                                                  $_SESSION['password'] = $getData['password'];
-                                                  $_SESSION['number'] = $getData['number'];
-                                                  $_SESSION['address'] = $getData['address'];
-                                                  $_SESSION['profile_picture'] = $getData['profile_picture'];
-                                                  header("Location: SuperAdmin/.php");
+                                            $_SESSION['id'] = $getData['id'];
+                                            $_SESSION['fullname'] = $getData['fullname'];
+                                            $_SESSION['gmail'] = $getData['gmail'];
+                                            $_SESSION['date'] = $getData['date'];
+                                          
+                                            $_SESSION['password'] = $getData['password'];
+                                            $_SESSION['number'] = $getData['number'];
+                                            $_SESSION['address'] = $getData['address'];
+                                            $_SESSION['profile_picture'] = $getData['profile_picture'];
+
+                                            header("Location: Admin/dashboard.php");
                                           }else{  
                                                 // modal for incorrect password
                                                 $incorrectPassword = true;

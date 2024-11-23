@@ -1,64 +1,8 @@
-
 <?php
-session_start();
-include("../connection/conn.php");
+    session_start();
+    include("../connection/conn.php");
+    date_default_timezone_set('Asia/Manila');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
-    $user_id = $_SESSION['id']; 
-    $fullname = mysqli_real_escape_string($conn, $_POST['fullname']);
-    $gmail = mysqli_real_escape_string($conn, $_POST['gmail']);
-   
-    $bio = mysqli_real_escape_string($conn, $_POST['bio']);
-    $profile_picture = $_FILES['profile_picture'];
-
- 
-    if (isset($profile_picture) && $profile_picture['error'] === UPLOAD_ERR_OK) {
-        $targetDir = "../profile_pictures/"; 
-        $fileName = $user_id . "_" . basename($profile_picture['name']);
-        $targetFilePath = $targetDir . $fileName;
-
-      
-        if (!file_exists($targetDir)) {
-            mkdir($targetDir, 0777, true);
-        }
-
-       
-        if (move_uploaded_file($profile_picture['tmp_name'], $targetFilePath)) {
-            $profilePicturePath = $targetFilePath;
-        } else {
-            $profilePicturePath = $_SESSION['profile_picture']; 
-        }
-    } else {
-        $profilePicturePath = $_SESSION['profile_picture']; 
-    }
-
-   
-    $updateQuery = "UPDATE sqlcommunity_main.user_account 
-                    SET fullname = '$fullname', gmail = '$gmail' , bio = '$bio', profile_picture = '$profilePicturePath'
-                    WHERE id = $user_id";
-
-
-
-    if (mysqli_query($conn, $updateQuery)) {
-      
-        $_SESSION['fullname'] = $fullname;
-        $_SESSION['status'] = $status;
-        $_SESSION['gmail'] = $gmail;
-        $_SESSION['bio'] = $bio;
-        $_SESSION['profile_picture'] = $profilePicturePath;
-
-       
-        header('Location: profile.php?success=Profile updated successfully.');
-        exit();
-    } else {
-      
-        header('Location: profile.php?error=Unable to update profile. Please try again.');
-        exit();
-    }
-}
-
- 
-   
 
 ?>
 <!DOCTYPE html>
@@ -70,6 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
+
+    
+    <link href="img/favicon.ico" rel="icon">
+
+  
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -88,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
    
     <link href="template/css/style.css" rel="stylesheet">
 </head>
+
 <body>
     <div class="container-xxl position-relative bg-white d-flex p-0">
       
@@ -96,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-    
+       
+
         <div class="sidebar pe-4 pb-3">
             <nav class="navbar bg-light navbar-light">
                 <a href="index.html" class="navbar-brand mx-4 mb-3">
@@ -116,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
                         <a href="dashboard.php" class="nav-item nav-link ">
                             <i class="fa fa-chart-line me-2"></i>Dashboard
                         </a>
-                        <a href="home.php" class="nav-item nav-link">
-                            <i class="fa fa-home me-2"></i>Home
+                        <a href="pending.php" class="nav-item nav-link">
+                            <i class="fa fa-hourglass-half me-2"></i>Pending Post
                         </a>
-                        <a href="profile.php" class="nav-item nav-link active">
+                        <a href="profile.php" class="nav-item nav-link ">
                             <i class="fa fa-user me-2"></i>Profile
                         </a>
-                        <a href="notification.php" class="nav-item nav-link">
+                        <a href="notification.php" class="nav-item nav-link active">
                             <i class="fa fa-bell me-2"></i>Notification
                         </a>           
                 </div>
@@ -139,7 +90,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-               
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control border-0" type="search" placeholder="Search">
+                </form>
                 <div class="navbar-nav align-items-center ms-auto">
                   
                      <div class="nav-item dropdown">
@@ -214,179 +167,187 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
                             <span class="d-none d-lg-inline-flex">Settings</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="home.php" class="dropdown-item">Home</a>
+                           <a href="home.php" class="dropdown-item">Home</a>
                             <a href="profile.php" class="dropdown-item">My Profile</a>
                             <a href="../index.php" class="dropdown-item">Log Out</a>
                         </div>
                     </div>
                 </div>
             </nav>
-
+         
             <div class="container-fluid pt-4 px-4">
-                    <div class="bg-light rounded-top p-4">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
 
-                            <!-- start -->
+<div class="container">
+    <div class="row">
+       
+        <div class="col-lg-12 right">
+            <div class="box shadow-sm rounded bg-white mb-3">
+                <div class="box-title border-bottom p-3">
+                    <h6 class="m-0">Recent</h6>
+                </div>
+                <div class="box-body p-0">
+
+
+                        <?php
 
                         
+                            $user_id = $_SESSION['id'];
+                            $sqlRecent = "SELECT * FROM sqlcommunity_notifications.user_notification ORDER BY id DESC LIMIT 2";
+                            $query = mysqli_query($conn,$sqlRecent);
 
-<form action="profile.php" method = "post" enctype="multipart/form-data">
-<div class="container">
-<div class="row flex-lg-nowrap">
+                           while( $resultData = mysqli_fetch_assoc($query)){
 
+                            $user_unique_id = $resultData['user_id'];
 
-        <?php 
+                            $sqlGetUserData = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $user_unique_id";
+                            $queryGetUserData = mysqli_query($conn,$sqlGetUserData);
+                            $resultGetUserData = mysqli_fetch_assoc($queryGetUserData);
 
-        $user_id = $_SESSION['id'];
+                            $date_now = new DateTime(); 
 
-        $SelectProfileInfo = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $user_id";
-        $queryForProfileInfo = mysqli_query($conn,$SelectProfileInfo);
-        $resultForProfileInfo = mysqli_fetch_assoc($queryForProfileInfo);
-
-
-        ?>
-
-
-  <div class="col">
-    <div class="row">
-      <div class="col mb-3">
-        <div class="card">
-          <div class="card-body">
-            <div class="e-profile">
-              <div class="row">
-                <div class="col-12 col-sm-auto mb-3">
-                  <div class="mx-auto" style="width: 140px;">
-                    <div class="d-flex justify-content-center align-items-center rounded" style="height: 140px; background-color: rgb(233, 236, 239);">
-                    <img id="profilePicturePreview" 
-                    src="<?php echo $resultForProfileInfo['profile_picture']; ?>" 
-                    alt="Profile Picture" 
-                    style="width: 140px; height: 140px;">
-
-                    </div>
-                  </div>
-                </div>
-                <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
-                  <div class="text-sm-left mb-2 mb-sm-0">
-                    <h4 class="pt-sm-2 pb-1 mb-0 text-nowrap"><?php echo $resultForProfileInfo['fullname']; ?></h4>
-                    <p class="mb-0"><?php echo $resultForProfileInfo['gmail']; ?></p>
-                    <div class="text-muted" style="background-color: #28a745; color: white; padding: 2px 6px; border-radius: 10px; display: inline-block;">
-                            <small style = "color: white;">Active Now</small>
-                        </div>
-
-                    <div class="mt-2">
-                    <button class="btn btn-primary" type="button" id="changePhotoButton">
-                        <i class="fa fa-fw fa-camera"></i>
-                        <span>Change Photo</span>
-                    </button>
-
-
-                    <input type="file" name="profile_picture" id="profilePictureInput" hidden>
-
-
-                    <script>
-                        document.getElementById('changePhotoButton').addEventListener('click', function() {
-                            document.getElementById('profilePictureInput').click();
-                        });
-
-                        document.getElementById('profilePictureInput').addEventListener('change', function(event) {
-                            const file = event.target.files[0]; 
-                            if (file) {
-                                const reader = new FileReader(); 
-                                reader.onload = function(e) {
-                                   
-                                    document.getElementById('profilePicturePreview').src = e.target.result;
-                                };
-                                reader.readAsDataURL(file); 
+                                        
+                            $date_post = new DateTime($resultData['date']); 
+    
+                        
+    
+                            
+                            $interval = $date_now->diff($date_post);
+    
+                        
+                            
+                            if ($interval->y > 0) {
+                                $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->m > 0) {
+                                $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->d > 0) {
+                                $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->h > 0) {
+                                $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->i > 0) {
+                                $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                            } else {
+                                $timeString = 'Just now';
                             }
-                        });
-                    </script>
+
+                          
+                        ?>
+
+                                <div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="<?php echo $resultGetUserData['profile_picture']; ?>" alt="" />
+                                    </div>
+                                    <div class="font-weight-bold mr-3">
+                                    <div class="text-truncate" style="margin-left: 10px; font-size: 12px; font-weight: bolder; display: flex; justify-content: space-between;">
+                                        <span><?php echo $timeString; ?></span>
+                                        <span style="font-weight: normal; font-size: 11px; position: absolute; right: 50px; font-weight: bolder;"><?php echo date('F j, Y', strtotime($resultData['date'])); ?></span>
+                                    </div>
+
+                                        <div class="small" style = "margin-left: 10px;"> <?php echo $resultGetUserData['fullname']." ".$resultData['notification']; ?></div>
+                                    </div>
+                            
+                                </div>
+
+                    <?php  } ?>
+              
+                </div>
+            </div>
+            <div class="box shadow-sm rounded bg-white mb-3">
+                    <div class="box-title border-bottom p-3">
+                        <h6 class="m-0">Earlier</h6>
+                    </div>
+                    <div class="box-body p-0">
+
+               
+                        <?php
+                    
+                        $sqlEarlier = "SELECT * FROM sqlcommunity_notifications.user_notification 
+                                    ORDER BY id DESC 
+                                    LIMIT 18446744073709551615 OFFSET 2"; 
+                        $queryEarlier = mysqli_query($conn, $sqlEarlier);
                       
-                    </div>
-                  </div>
-                  <div class="text-center text-sm-right">
-                  
-                    <div class="text-muted" style = "font-size:14px; font-weight: bolder;"><small>Joined <?php echo date('F j, Y', strtotime($resultForProfileInfo['date'])); ?></small></div>
-                  </div>
-                </div>
-              </div>
-              <ul class="nav nav-tabs">
-                <li class="nav-item"><a href="" class="active nav-link">Settings</a></li>
-              </ul>
-              <div class="tab-content pt-3">
-                <div class="tab-pane active">
-                
-                    <div class="row">
-                      <div class="col">
-                        <div class="row">
-                          <div class="col">
-                            <div class="form-group">
-                              <label>Full Name</label>
-                              <input class="form-control" type="text" name="fullname"  value="<?php echo $resultForProfileInfo['fullname']; ?>">
-                            </div>
-                          </div>
-                          <div class="col">
-                            <div class="form-group">
-                              <label>Status</label>
-                              <input class="form-control" type="text" name="status"  value="<?php echo $resultForProfileInfo['status']; ?>" readonly>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col">
-                            <div class="form-group">
-                              <label>Email</label>
-                              <input class="form-control" name = "gmail" type="text" placeholder="<?php echo $resultForProfileInfo['gmail']; ?>" value = "<?php echo $resultForProfileInfo['gmail']; ?>">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col mb-3">
-                            <div class="form-group">
-                              <label>About</label>
-                              <textarea class="form-control" name = "bio" rows="5" ><?php if (empty($resultForProfileInfo['bio'])) {
-                                        echo "This user seems to be a bit too lazy to fill out their bio. Maybe they’re still thinking about how to describe themselves, or perhaps they believe their actions speak louder than words. We hope they’ll share something interesting here soon!";
-                                    } else {
-                                        echo $resultForProfileInfo['bio'];
-                                    } 
-                                    ?>
-                                    </textarea>
+                        while ($row = mysqli_fetch_assoc($queryEarlier)) {
 
+                            $user_unique_id = $row['user_id'];
+
+                            $sqlGetUserData = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $user_unique_id";
+                            $queryGetUserData = mysqli_query($conn,$sqlGetUserData);
+                            $resultGetUserData = mysqli_fetch_assoc($queryGetUserData);
+
+                            $date_now = new DateTime(); 
+
+                                        
+                            $date_post = new DateTime($row['date']); 
+    
+                        
+    
+                            
+                            $interval = $date_now->diff($date_post);
+    
+                        
+                            
+                            if ($interval->y > 0) {
+                                $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->m > 0) {
+                                $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->d > 0) {
+                                $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->h > 0) {
+                                $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->i > 0) {
+                                $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                            } else {
+                                $timeString = 'Just now';
+                            }
+
+
+                        ?>
+                            <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                                <div class="dropdown-list-image mr-3">
+                                <img class="rounded-circle" src="<?php echo $resultGetUserData['profile_picture']; ?>" alt="" />
+                                </div>
+                                <div class="font-weight-bold mr-3">
+
+                              
+                                
+
+                                <div class="text-truncate" style="margin-left: 10px; font-size: 12px; font-weight: bolder; display: flex; justify-content: space-between;">
+                                        <span><?php echo $timeString; ?></span>
+                                        <span style="font-weight: normal; font-size: 11px; position: absolute; right: 50px; font-weight: bolder;"><?php echo date('F j, Y', strtotime($row['date'])); ?></span>
+                                    </div>
+                                    <div class="small" style="margin-left: 10px;">
+                                    <?php echo $resultGetUserData['fullname']." ".$row['notification']; ?>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
+                        <?php
+                        }
+                        ?>
                     </div>
-                    <div class="row">
-                  
-                
-                    </div>
-                    <div class="row">
-                      <div class="col d-flex justify-content-center">
-                        <input type="submit" name = "submitChanges" class = "btn btn-success" value = "Save Changes" style = "width: 100%;">
-                       
-                      </div>
-                    </div>
-                 
                 </div>
-              </div>
-            </div>
-          </div>
+
         </div>
-      </div>
-
-  
     </div>
-
-  </div>
-</div>
 </div>
 
-</form>
-
-                            <!-- end -->
-                    </div>
+<style>
+    .dropdown-list-image {
+    position: relative;
+    height: 2.5rem;
+    width: 2.5rem;
+}
+.dropdown-list-image img {
+    height: 2.5rem;
+    width: 2.5rem;
+}
+.btn-light {
+    color: #2cdd9b;
+    background-color: #e5f7f0;
+    border-color: #d8f7eb;
+}
+</style>
             </div>
-         
-         
+          
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light rounded-top p-4">
                     <div class="row">

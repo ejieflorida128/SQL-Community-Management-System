@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
     }
 
    
-    $updateQuery = "UPDATE sqlcommunity_main.user_account 
+    $updateQuery = "UPDATE sqlcommunity_main.admin_account 
                     SET fullname = '$fullname', gmail = '$gmail' , bio = '$bio', profile_picture = '$profilePicturePath'
                     WHERE id = $user_id";
 
@@ -113,18 +113,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
                     </div>
                 </div>
                 <div class="navbar-nav w-100">
-                        <a href="dashboard.php" class="nav-item nav-link ">
+                <a href="dashboard.php" class="nav-item nav-link ">
                             <i class="fa fa-chart-line me-2"></i>Dashboard
                         </a>
-                        <a href="home.php" class="nav-item nav-link">
-                            <i class="fa fa-home me-2"></i>Home
+                        <a href="pending.php" class="nav-item nav-link">
+                            <i class="fa fa-hourglass-half me-2"></i>Pending Post
                         </a>
                         <a href="profile.php" class="nav-item nav-link active">
                             <i class="fa fa-user me-2"></i>Profile
                         </a>
                         <a href="notification.php" class="nav-item nav-link">
                             <i class="fa fa-bell me-2"></i>Notification
-                        </a>           
+                        </a>                
                 </div>
             </nav>
         </div>
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
 
                         date_default_timezone_set('Asia/Manila');
                                       $unique_id = $_SESSION['id'];
-                                      $sqlRecentNotif = "SELECT * FROM sqlcommunity_notifications.user_notification WHERE user_id = $unique_id ORDER BY id DESC LIMIT 3";
+                                      $sqlRecentNotif = "SELECT * FROM sqlcommunity_notifications.user_notification ORDER BY id DESC LIMIT 3";
                                       $Notifquery = mysqli_query($conn,$sqlRecentNotif);
 
                                       while($getNotif = mysqli_fetch_assoc($Notifquery)){
@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submitChanges'])) {
 
         $user_id = $_SESSION['id'];
 
-        $SelectProfileInfo = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $user_id";
+        $SelectProfileInfo = "SELECT * FROM sqlcommunity_main.admin_account WHERE id = $user_id";
         $queryForProfileInfo = mysqli_query($conn,$SelectProfileInfo);
         $resultForProfileInfo = mysqli_fetch_assoc($queryForProfileInfo);
 
