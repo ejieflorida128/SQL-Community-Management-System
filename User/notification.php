@@ -145,7 +145,7 @@
                                 <h6 class="fw-normal mb-0"><?php 
 
                                             if($getNotif['type'] == 1){
-                                                    echo "Posted a Solution";
+                                                    echo "Posted a Problem";
                                             }else if($getNotif['type'] == 2){
                                                     echo "Solved a Problem";
                                             }
