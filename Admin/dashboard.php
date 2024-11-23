@@ -108,7 +108,7 @@ while ($row = $result->fetch_assoc()) {
                             <i class="fa fa-chart-line me-2"></i>Dashboard
                         </a>
                         <a href="pending.php" class="nav-item nav-link">
-                            <i class="fa fa-hourglass-half me-2"></i>Pending Post
+                            <i class="fa fa-hourglass-half me-2"></i>Manage Post
                         </a>
                         <a href="profile.php" class="nav-item nav-link">
                             <i class="fa fa-user me-2"></i>Profile
