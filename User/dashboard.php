@@ -3,17 +3,17 @@
 session_start();
 include("../connection/conn.php");
 
-$adminAges = [];
-$result = $conn->query("SELECT age, COUNT(*) as count FROM sqlcommunity_main.admin_account GROUP BY age");
+$adminStatus = [];
+$result = $conn->query("SELECT status, COUNT(*) as count FROM sqlcommunity_main.admin_account GROUP BY status");
 while ($row = $result->fetch_assoc()) {
-    $adminAges[$row['age']] = $row['count'];
+    $adminStatus[$row['status']] = $row['count'];
 }
 
 
-$userAges = [];
-$result = $conn->query("SELECT age, COUNT(*) as count FROM sqlcommunity_main.user_account GROUP BY age");
+$userStatus = [];
+$result = $conn->query("SELECT status, COUNT(*) as count FROM sqlcommunity_main.user_account GROUP BY status");
 while ($row = $result->fetch_assoc()) {
-    $userAges[$row['age']] = $row['count'];
+    $userStatus[$row['status']] = $row['count'];
 }
 
 
@@ -130,9 +130,7 @@ while ($row = $result->fetch_assoc()) {
                 <a href="#" class="sidebar-toggler flex-shrink-0">
                     <i class="fa fa-bars"></i>
                 </a>
-                <!-- <form class="d-none d-md-flex ms-4">
-                    <input class="form-control border-0" type="search" placeholder="Search">
-                </form> -->
+               
                 <div class="navbar-nav align-items-center ms-auto">
                   
                     <div class="nav-item dropdown">
@@ -141,22 +139,64 @@ while ($row = $result->fetch_assoc()) {
                             <span class="d-none d-lg-inline-flex">Notification</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
+
+                            <?php 
+
+                        date_default_timezone_set('Asia/Manila');
+                                      $unique_id = $_SESSION['id'];
+                                      $sqlRecentNotif = "SELECT * FROM sqlcommunity_notifications.user_notification WHERE user_id = $unique_id ORDER BY id DESC LIMIT 3";
+                                      $Notifquery = mysqli_query($conn,$sqlRecentNotif);
+
+                                      while($getNotif = mysqli_fetch_assoc($Notifquery)){
+
+
+                                        $date_now = new DateTime(); 
+
+                                        
+                                        $date_post = new DateTime($getNotif['date']); 
+                
+                                    
+                
+                                        
+                                        $interval = $date_now->diff($date_post);
+                
+                                    
+                                        
+                                        if ($interval->y > 0) {
+                                            $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->m > 0) {
+                                            $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->d > 0) {
+                                            $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->h > 0) {
+                                            $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->i > 0) {
+                                            $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                                        } else {
+                                            $timeString = 'Just now';
+                                        }
+
+                                      
+                            ?>
+                          
+                            <a href="notification.php" class="dropdown-item">
+                                <h6 class="fw-normal mb-0"><?php 
+
+                                            if($getNotif['type'] == 1){
+                                                    echo "Posted a Solution";
+                                            }else if($getNotif['type'] == 2){
+                                                    echo "Solved a Problem";
+                                            }
+                                        
+                                ?></h6>
+                                <small><?php echo $timeString; ?></small>
                             </a>
                             <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+
+                            <?php  }  ?>
+
+                            <a href="notification.php" class="dropdown-item text-center">See all notifications</a>
+                           
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -201,8 +241,8 @@ while ($row = $result->fetch_assoc()) {
 
                      <script>
                             // Data for charts
-                            const adminAges = <?php echo json_encode($adminAges); ?>;
-                            const userAges = <?php echo json_encode($userAges); ?>;
+                            const adminStatus = <?php echo json_encode($adminStatus); ?>;
+                            const userStatus = <?php echo json_encode($userStatus); ?>;
                             const commentsPerPost = <?php echo json_encode($commentsPerPost); ?>;
                             const postStatus = <?php echo json_encode($postStatus); ?>;
                             const adminLocations = <?php echo json_encode($adminLocations); ?>;
@@ -212,10 +252,10 @@ while ($row = $result->fetch_assoc()) {
                             new Chart(document.getElementById('chart1'), {
                                 type: 'bar',
                                 data: {
-                                    labels: Object.keys(adminAges),
+                                    labels: Object.keys(adminStatus),
                                     datasets: [{
-                                        label: 'Admin Age Distribution',
-                                        data: Object.values(adminAges),
+                                        label: 'Admin Status Update',
+                                        data: Object.values(adminStatus),
                                         backgroundColor: 'rgba(75, 192, 192, 0.6)',
                                         borderColor: 'rgba(75, 192, 192, 1)',
                                         borderWidth: 1
@@ -227,10 +267,10 @@ while ($row = $result->fetch_assoc()) {
                             new Chart(document.getElementById('chart2'), {
                                 type: 'bar',
                                 data: {
-                                    labels: Object.keys(userAges),
+                                    labels: Object.keys(userStatus),
                                     datasets: [{
-                                        label: 'User Age Distribution',
-                                        data: Object.values(userAges),
+                                        label: 'User Status Update',
+                                        data: Object.values(userStatus),
                                         backgroundColor: 'rgba(54, 162, 235, 0.6)',
                                         borderColor: 'rgba(54, 162, 235, 1)',
                                         borderWidth: 1

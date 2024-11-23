@@ -6,9 +6,10 @@
 
         if (isset($_POST['addPost'])) {
 
-            $sqlTitle = $_POST['sqlTitle'];
-            $sqlDescription = $_POST['sqlDescription'];
-            $sqlCode = $_POST['sqlCode'];
+            $sqlTitle = htmlspecialchars($_POST['sqlTitle'], ENT_QUOTES, 'UTF-8');
+            $sqlDescription = htmlspecialchars($_POST['sqlDescription'], ENT_QUOTES, 'UTF-8');
+            $sqlCode = htmlspecialchars($_POST['sqlCode'], ENT_QUOTES, 'UTF-8');
+            
             $post_by_id = $_SESSION['id'];
             $status = 'Approved';
 
@@ -17,6 +18,19 @@
             $stmt = $conn->prepare($sqlInsertPost);
             $stmt->bind_param("issss", $post_by_id, $sqlTitle, $sqlDescription, $sqlCode, $status);
 
+
+            $action_user_id = $post_by_id;
+            $sqlGetNotificationInformation = "SELECT * FROM sqlcommunity_main.user_account WHERE id = $action_user_id";
+            $queryGetNotificationInformation = mysqli_query($conn,$sqlGetNotificationInformation);
+            $resultGetInformation = mysqli_fetch_assoc($queryGetNotificationInformation);
+
+
+          $message = "You have successfully posted an SQL problem, detailing the specific issue or query that requires assistance or clarification.";
+
+            
+            
+            $insertNotification = "INSERT INTO sqlcommunity_notifications.user_notification (user_id,notification) VALUES ('$action_user_id','$message')";
+            mysqli_query($conn,$insertNotification);
          
             if ($stmt->execute()) {
                 header("Location: home.php");
@@ -24,6 +38,8 @@
             } else {
                 echo "Error: " . $stmt->error;
             }
+
+            $message = '';
 
           
             $stmt->close();
@@ -35,12 +51,22 @@
         if(isset($_POST['commentForm'])){
                     $post_id = $_POST['post_id'];
                     $commenter_id = $_SESSION['id'];
+                    
                 
-                    $comment = $_POST['textCommentInput'];
-                    $code = $_POST['codeCommentInput'];
+                    $comment = htmlspecialchars($_POST['textCommentInput'], ENT_QUOTES, 'UTF-8');
+                    $code = htmlspecialchars($_POST['codeCommentInput'], ENT_QUOTES, 'UTF-8');
+
 
                     $insertComment = "INSERT INTO sqlcommunity_interaction.comments (post_id,commenter_id,comment,code) VALUES ('$post_id','$commenter_id','$comment','$code')";
                     mysqli_query($conn,$insertComment);
+
+                    $message = "have posted a solution that provides detailed information and practical steps to effectively resolve the issue at hand.";
+
+
+                    $insertCommentNotification = "INSERT INTO sqlcommunity_notifications.user_notification (user_id,notification) VALUES ('$commenter_id','$message')";
+                    mysqli_query($conn,$insertCommentNotification);
+
+                    $message = '';
 
 
                     
@@ -157,28 +183,70 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                   
-                    <div class="nav-item dropdown">
+                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">Notification</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
+
+                            <?php 
+
+                        date_default_timezone_set('Asia/Manila');
+                                      $unique_id = $_SESSION['id'];
+                                      $sqlRecentNotif = "SELECT * FROM sqlcommunity_notifications.user_notification WHERE user_id = $unique_id ORDER BY id DESC LIMIT 3";
+                                      $Notifquery = mysqli_query($conn,$sqlRecentNotif);
+
+                                      while($getNotif = mysqli_fetch_assoc($Notifquery)){
+
+
+                                        $date_now = new DateTime(); 
+
+                                        
+                                        $date_post = new DateTime($getNotif['date']); 
+                
+                                    
+                
+                                        
+                                        $interval = $date_now->diff($date_post);
+                
+                                    
+                                        
+                                        if ($interval->y > 0) {
+                                            $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->m > 0) {
+                                            $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->d > 0) {
+                                            $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->h > 0) {
+                                            $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->i > 0) {
+                                            $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                                        } else {
+                                            $timeString = 'Just now';
+                                        }
+
+                                      
+                            ?>
+                          
+                            <a href="notification.php" class="dropdown-item">
+                                <h6 class="fw-normal mb-0"><?php 
+
+                                            if($getNotif['type'] == 1){
+                                                    echo "Posted a Solution";
+                                            }else if($getNotif['type'] == 2){
+                                                    echo "Solved a Problem";
+                                            }
+                                        
+                                ?></h6>
+                                <small><?php echo $timeString; ?></small>
                             </a>
                             <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+
+                            <?php  }  ?>
+
+                            <a href="notification.php" class="dropdown-item text-center">See all notifications</a>
+                           
                         </div>
                     </div>
                     <div class="nav-item dropdown">

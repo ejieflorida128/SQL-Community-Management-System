@@ -1,6 +1,7 @@
 <?php
     session_start();
     include("../connection/conn.php");
+    date_default_timezone_set('Asia/Manila');
 
 
 ?>
@@ -94,28 +95,70 @@
                 </form>
                 <div class="navbar-nav align-items-center ms-auto">
                   
-                    <div class="nav-item dropdown">
+                     <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <i class="fa fa-bell me-lg-2"></i>
                             <span class="d-none d-lg-inline-flex">Notification</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Profile updated</h6>
-                                <small>15 minutes ago</small>
+
+                            <?php 
+
+                        date_default_timezone_set('Asia/Manila');
+                                      $unique_id = $_SESSION['id'];
+                                      $sqlRecentNotif = "SELECT * FROM sqlcommunity_notifications.user_notification WHERE user_id = $unique_id ORDER BY id DESC LIMIT 3";
+                                      $Notifquery = mysqli_query($conn,$sqlRecentNotif);
+
+                                      while($getNotif = mysqli_fetch_assoc($Notifquery)){
+
+
+                                        $date_now = new DateTime(); 
+
+                                        
+                                        $date_post = new DateTime($getNotif['date']); 
+                
+                                    
+                
+                                        
+                                        $interval = $date_now->diff($date_post);
+                
+                                    
+                                        
+                                        if ($interval->y > 0) {
+                                            $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->m > 0) {
+                                            $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->d > 0) {
+                                            $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->h > 0) {
+                                            $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                                        } elseif ($interval->i > 0) {
+                                            $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                                        } else {
+                                            $timeString = 'Just now';
+                                        }
+
+                                      
+                            ?>
+                          
+                            <a href="notification.php" class="dropdown-item">
+                                <h6 class="fw-normal mb-0"><?php 
+
+                                            if($getNotif['type'] == 1){
+                                                    echo "Posted a Solution";
+                                            }else if($getNotif['type'] == 2){
+                                                    echo "Solved a Problem";
+                                            }
+                                        
+                                ?></h6>
+                                <small><?php echo $timeString; ?></small>
                             </a>
                             <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">New user added</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item">
-                                <h6 class="fw-normal mb-0">Password changed</h6>
-                                <small>15 minutes ago</small>
-                            </a>
-                            <hr class="dropdown-divider">
-                            <a href="#" class="dropdown-item text-center">See all notifications</a>
+
+                            <?php  }  ?>
+
+                            <a href="notification.php" class="dropdown-item text-center">See all notifications</a>
+                           
                         </div>
                     </div>
                     <div class="nav-item dropdown">
@@ -133,11 +176,165 @@
             </nav>
          
             <div class="container-fluid pt-4 px-4">
-                <div class="row vh-100 bg-light rounded align-items-center justify-content-center mx-0">
-                    <div class="col-md-6 text-center">
-                        <h3>This is blank page</h3>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+
+<div class="container">
+    <div class="row">
+       
+        <div class="col-lg-12 right">
+            <div class="box shadow-sm rounded bg-white mb-3">
+                <div class="box-title border-bottom p-3">
+                    <h6 class="m-0">Recent</h6>
+                </div>
+                <div class="box-body p-0">
+
+
+                        <?php
+
+                        
+                            $user_id = $_SESSION['id'];
+                            $sqlRecent = "SELECT * FROM sqlcommunity_notifications.user_notification WHERE user_id = $user_id ORDER BY id DESC LIMIT 2";
+                            $query = mysqli_query($conn,$sqlRecent);
+
+                           while( $resultData = mysqli_fetch_assoc($query)){
+
+                            $date_now = new DateTime(); 
+
+                                        
+                            $date_post = new DateTime($resultData['date']); 
+    
+                        
+    
+                            
+                            $interval = $date_now->diff($date_post);
+    
+                        
+                            
+                            if ($interval->y > 0) {
+                                $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->m > 0) {
+                                $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->d > 0) {
+                                $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->h > 0) {
+                                $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->i > 0) {
+                                $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                            } else {
+                                $timeString = 'Just now';
+                            }
+
+                          
+                        ?>
+
+                                <div class="p-3 d-flex align-items-center bg-light border-bottom osahan-post-header">
+                                    <div class="dropdown-list-image mr-3">
+                                        <img class="rounded-circle" src="<?php echo $_SESSION['profile_picture']; ?>" alt="" />
+                                    </div>
+                                    <div class="font-weight-bold mr-3">
+                                    <div class="text-truncate" style="margin-left: 10px; font-size: 12px; font-weight: bolder; display: flex; justify-content: space-between;">
+                                        <span><?php echo $timeString; ?></span>
+                                        <span style="font-weight: normal; font-size: 11px; position: absolute; right: 50px; font-weight: bolder;"><?php echo date('F j, Y', strtotime($resultData['date'])); ?></span>
+                                    </div>
+
+                                        <div class="small" style = "margin-left: 10px;">You <?php echo $resultData['notification']; ?></div>
+                                    </div>
+                            
+                                </div>
+
+                    <?php  } ?>
+              
+                </div>
+            </div>
+            <div class="box shadow-sm rounded bg-white mb-3">
+                    <div class="box-title border-bottom p-3">
+                        <h6 class="m-0">Earlier</h6>
+                    </div>
+                    <div class="box-body p-0">
+
+               
+                        <?php
+                    
+                        $sqlEarlier = "SELECT * FROM sqlcommunity_notifications.user_notification 
+                                    WHERE user_id = $user_id 
+                                    ORDER BY id DESC 
+                                    LIMIT 18446744073709551615 OFFSET 2"; 
+                        $queryEarlier = mysqli_query($conn, $sqlEarlier);
+                      
+                        while ($row = mysqli_fetch_assoc($queryEarlier)) {
+
+                            $date_now = new DateTime(); 
+
+                                        
+                            $date_post = new DateTime($row['date']); 
+    
+                        
+    
+                            
+                            $interval = $date_now->diff($date_post);
+    
+                        
+                            
+                            if ($interval->y > 0) {
+                                $timeString = $interval->y . ' year' . ($interval->y > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->m > 0) {
+                                $timeString = $interval->m . ' month' . ($interval->m > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->d > 0) {
+                                $timeString = $interval->d . ' day' . ($interval->d > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->h > 0) {
+                                $timeString = $interval->h . ' hour' . ($interval->h > 1 ? 's' : '') . ' ago';
+                            } elseif ($interval->i > 0) {
+                                $timeString = $interval->i . ' minute' . ($interval->i > 1 ? 's' : '') . ' ago';
+                            } else {
+                                $timeString = 'Just now';
+                            }
+
+
+                        ?>
+                            <div class="p-3 d-flex align-items-center border-bottom osahan-post-header">
+                                <div class="dropdown-list-image mr-3">
+                                    <img class="rounded-circle" src="<?php echo $_SESSION['profile_picture']; ?>" alt="" />
+                                </div>
+                                <div class="font-weight-bold mr-3">
+
+                              
+                                
+
+                                <div class="text-truncate" style="margin-left: 10px; font-size: 12px; font-weight: bolder; display: flex; justify-content: space-between;">
+                                        <span><?php echo $timeString; ?></span>
+                                        <span style="font-weight: normal; font-size: 11px; position: absolute; right: 50px; font-weight: bolder;"><?php echo date('F j, Y', strtotime($row['date'])); ?></span>
+                                    </div>
+                                    <div class="small" style="margin-left: 10px;">
+                                        You <?php echo htmlspecialchars($row['notification']); ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .dropdown-list-image {
+    position: relative;
+    height: 2.5rem;
+    width: 2.5rem;
+}
+.dropdown-list-image img {
+    height: 2.5rem;
+    width: 2.5rem;
+}
+.btn-light {
+    color: #2cdd9b;
+    background-color: #e5f7f0;
+    border-color: #d8f7eb;
+}
+</style>
             </div>
           
             <div class="container-fluid pt-4 px-4">

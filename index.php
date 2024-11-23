@@ -444,54 +444,50 @@
 
         <section id="contact" class="contact section">
 
-<!-- Section Title -->
-<div class="container section-title" data-aos="fade-up">
-  <h2>Contact</h2>
-  <p>If you have any questions or need assistance with our SQL Community Management System, feel free to reach out. We're here to help!</p>
-</div><!-- End Section Title -->
+            <div class="container section-title" data-aos = "fade-up" data-aos-delay = "100">
+                    <div class="row gy-4">
+                            <div class="col-lg-6">
+                                  <div class="info-item d-flex coloumn justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+                                      <i class = "bi bi-geo-alt"></i>
+                                    
+                                      <p style = "margin-left: 5px;">Pinaskohan, Maasin City, Southern Leyte, 6600</p>
+                                  </div>
+                            </div>
+                  
 
-<div class="container" data-aos="fade-up" data-aos-delay="100">
+                  
+                            <div class="col-lg-3 col-md-6">
+                                  <div class="info-item d-flex coloumn justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
+                                      <i class = "bi bi-telephone"></i>
+                                    
+                                      <p style = "margin-left: 5px;">+63 962 790 5690</p>
+                                  </div>
+                            </div>
+                   
 
-  <div class="row gy-4">
+                  
+                            <div class="col-lg-3 col-md-6">
+                                  <div class="info-item d-flex coloumn justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
+                                      <i class = "bi bi-envelope"></i>
+                                     
+                                      <p style = "margin-left: 5px;">ejieflorida128@gmail.com</p>
+                                  </div>
+                            </div>
 
-    <div class="col-lg-6">
-      <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
-        <i class="bi bi-geo-alt"></i>
-        <h3>Address</h3>
-        <p>Pinaskohan, Maasin City, Southern Leyte, 6600</p>
-      </div>
-    </div><!-- End Info Item -->
+                    </div>
 
-    <div class="col-lg-3 col-md-6">
-      <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
-        <i class="bi bi-telephone"></i>
-        <h3>Call Us</h3>
-        <p>+63 962 790 5690</p>
-      </div>
-    </div><!-- End Info Item -->
+                    <div class="row gy-4 mt-1">
+                      
+                           <div class="info-item d-flex coloumn justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
+                           <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3088.569866982478!2d124.83776587377976!3d10.165354589948649!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x330747000361715d%3A0x508c489bd179363d!2sPinaskohan!5e1!3m2!1sen!2sph!4v1731561166794!5m2!1sen!2sph" width="100%;" height="400px;" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style = "border: 0; width: 100%; height:400px;"></iframe>
+                                   
+                    </div>
 
-    <div class="col-lg-3 col-md-6">
-      <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
-        <i class="bi bi-envelope"></i>
-        <h3>Email Us</h3>
-        <p>ejieflorida128@gmail.com</p>
-      </div>
-    </div><!-- End Info Item -->
 
-  </div>
+            </div>
 
-  <div class="row gy-4 mt-1">
-    <div class="col-lg-12" data-aos="fade-up" data-aos-delay="300">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2848.2340852353036!2d124.83776587323109!3d10.165359870171198!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x330747000361715d%3A0x508c489bd179363d!2sPinaskohan!5e1!3m2!1sen!2sus!4v1731052296072!5m2!1sen!2sus" frameborder="0" style="border:0; width: 100%; height: 400px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div><!-- End Google Maps -->
 
-  
-
-  </div>
-
-</div>
-
-</section>
+        </section>
 
 
   </main>
