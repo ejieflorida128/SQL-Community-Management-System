@@ -579,7 +579,7 @@ body {
                 </div>
 
            
-              <div class="text"><a href="forgot_password.php" style = "color: #2cbaf2;">Forgot password?</a></div>
+              <div class="text"><a href="forgot_password/forgot-password.php" style = "color: #2cbaf2;">Forgot password?</a></div>
               <div class="button input-box">
                 <input type="submit" value="login" name = "action">
               </div>
